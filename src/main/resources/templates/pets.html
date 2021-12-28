@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org/"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Pets</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="header">
+    <span>Silme ve ekleme işlemlerini yalnızca adminler yapabilir.</span>
+</div>
+<br>
+<h3>Hayvanlar</h3>
+<br>
+<!-- EKLEME İŞLEMİ--->
+<button type="button" class="btn btn-success" data-toggle="modal"
+        data-target="#submitModal">Hayvan Ekle</button>
+<br>
+<br>
+<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"/>
+<!-- Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action="#" th:action="@{/addPet}" th:object="${petEntity}" method="post">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Hayvan Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Sahip</label>
+                    <select th:field="*{owner_id}" class="form-control">
+                        <option th:each="owner_id: ${owners}" th:value="${owner_id.id}" th:text="${owner_id.name}"></option>
+                    </select>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('owner_id')}" th:errors="${owner_id.owner_id}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="name1">Ad</label>
+                    <input type="text" th:field="*{name}" class="form-control" id="name1" placeholder="Ad" required>
+                    <small id="nameHelp" class="form-text text-muted">Ad 5-15 karakter olmalıdır</small>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('name')}" th:errors="${pet.name}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="type1">Tür</label>
+                    <input type="text" th:field="*{type}" class="form-control" id="type1" placeholder="Tür">
+                    <small id="typeHelp" class="form-text text-muted">Tür max 15 karakter olmalıdır</small>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="genus1">Cins</label>
+                    <input type="text" th:field="*{genus}" class="form-control" id="genus1" placeholder="Cins">
+                    <small id="genusHelp" class="form-text text-muted">Cins max 15 karakter olmalıdır</small>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('genus')}" th:errors="*{genus}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="age1">Yaş</label>
+                    <input type="text" th:field="*{age}" class="form-control" id="age1" placeholder="Yaş">
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="explanation1">Açıklama</label>
+                    <textarea th:field="*{explanation}" class="form-control" id="explanation1" placeholder="Açıklama" />
+                    <small id="explanation1Help" class="form-text text-muted">Açıklama max 150 karakter olmalıdır</small>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('explanation')}" th:errors="*{explanation}"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Ekle</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<table class="table table-striped">
+
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">ID</th>
+        <th scope="col">Hayvan Adı</th>
+        <th scope="col">Türü</th>
+        <th scope="col">Cinsi</th>
+        <th scope="col">Yaşı</th>
+        <th scope="col">Açıklama</th>
+        <th scope="col">Sahip</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${pets.empty}">
+        <td colspan="8"> No Pets Available </td>
+    </tr>
+    <tr th:each="pet: ${pets}">
+        <td style="white-space: nowrap; width: 1%;">
+            <!-- GÜNCELLEME İŞLEMİ--->
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+                    data-target="#updateModal" th:attrappend="data-target=${pet.id}"  sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Güncelle</button>
+
+            <!-- The Modal -->
+            <div class="modal fade" id="updateModal" th:attrappend="id=${pet.id}">
+                <form action="#" th:action="@{/updatePet/{id}(id=${pet.id})}"  th:object="${petEntity}" method="post">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Hayvan Güncelle</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <p style="color:red">**Güncellenecek Hayvan= <span th:text="${pet.name}"  th:remove="tag"></span></p>
+
+                                <div class="form-group">
+                                    <label>Sahip</label>
+
+                                    <select id="owner_id" name="owner_id" class="form-control">
+                                        <option th:each="owner_idd: ${owners}" th:value="${owner_idd.id}" th:selected="${owner_idd.id == pet.owner_id.id}" th:text="${owner_idd.name}"></option>
+                                    </select>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('owner_id')}" th:errors="${owner_id.owner_id}"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">Ad</label>
+                                    <input type="text" th:value="${pet.name}"  class="form-control" id="name" name="name" placeholder="Ad" required="required">
+                                    <small id="nameHelp1" class="form-text text-muted">Ad 3-15 karakter olmalıdır</small>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="type">Tür</label>
+                                    <input type="text" th:value="${pet.type}" class="form-control" id="type" name="type" placeholder="Tür">
+                                    <small id="typeHelp1" class="form-text text-muted">Tür max 15 karakter olmalıdır</small>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="genus">Cins</label>
+                                    <input type="text" th:value="${pet.genus}" class="form-control" id="genus" name="genus" placeholder="Cins">
+                                    <small id="genusHelp1" class="form-text text-muted">Cins max 15 karakter olmalıdır</small>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('genus')}" th:errors="*{genus}"></div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="age">Yaş</label>
+                                    <input type="text" th:value="${pet.age}" class="form-control" id="age" name="age" placeholder="Yaş">
+                                </div>
+                                <div class="form-group">
+                                    <label for="explanation">Açıklama</label>
+                                    <textarea th:text="${pet.explanation}" class="form-control" id="explanation" name="explanation" placeholder="Açıklama"></textarea>
+                                    <small id="explanationHelp1" class="form-text text-muted">Açıklama max 150 karakter olmalıdır</small>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('explanation')}" th:errors="*{explanation}"></div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Güncelle</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SİLME İŞLEMİ--->
+            <button type="button" class="btn btn-danger" data-toggle="modal"
+                    data-target="#deleteModal" th:attrappend="data-target=${pet.id}"  sec:authorize="hasAnyAuthority('ADMIN')">Sil </button>
+
+            <!-- The Modal -->
+            <div class="modal fade" id="deleteModal" th:attrappend="id=${pet.id}">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Hayvan Sil</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-body">
+                            <h5>'<span style="text-color:red" th:text="${pet.name}" th:remove="tag"></span>' kaydını silmek istediğinizden emin misiniz?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="#" th:action="@{'/deletePet/{id}'(id=${pet.id})}" th:method="delete" >
+                                <button type="submit" id="submitButton" class="btn btn-success">Sil</button>
+                                <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Kapat</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td th:text="${pet.id}">ID</td>
+        <td th:text="${pet.name}">Hayvan Adı</td>
+        <td th:text="${pet.type}">Tür</td>
+        <td th:text="${pet.genus}">Cinsi</td>
+        <td th:text="${pet.age}">Yaşı</td>
+        <td th:text="${pet.explanation}">Açıklama</td>
+        <td th:text="${pet.owner_id.name}">Sahip</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

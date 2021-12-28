@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org/"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" >
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="header">
+    <span>Silme ve ekleme işlemlerini yalnızca adminler yapabilir. <br> Şifre alanını yalnızca Adminler görüntüleyebilir</span>
+</div>
+<br>
+
+<h3>Kullanıcılar</h3>
+<br>
+
+
+<!-- EKLEME İŞLEMİ--->
+<button type="button" class="btn btn-success" data-toggle="modal"
+        data-target="#submitModal" sec:authorize="hasAnyAuthority('ADMIN')">Kullanıcı Ekle</button>
+
+<br>
+<br>
+<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"/>
+<!-- Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action="#" th:action="@{/addUser}" th:object="${userEntity}" method="post">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Kullanıcı Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="username1">Kullanıcı Adı</label>
+                    <input type="text" th:field="*{user_name}" class="form-control" id="username1" placeholder="Kullanıcı Adı" required>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('user_name')}" th:errors="*{user_name}"></div>
+                    <small id="usernameHelp" class="form-text text-muted">Kullanıcı adı benzersiz ve 5-15 karakter olmalıdır</small>
+
+                </div>
+                <div class="form-group">
+                    <label for="password1">Şifre</label>
+                    <input type="password" th:field="*{password}" class="form-control" id="password1" placeholder="Şifre" required>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    <small id="passwordHelp" class="form-text text-muted">Şifre 5-15 karakter olmalıdır</small>
+
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select th:field="*{role}" class="form-control">
+                        <option value="USER" text="USER">USER</option>
+                        <option value="ADMIN" text="ADMIN">ADMIN</option>
+                    </select>
+               </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Ekle</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<table class="table table-striped">
+
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">ID</th>
+        <th scope="col">Kullanıcı Adı</th>
+        <th scope="col" sec:authorize="hasAnyAuthority('ADMIN')">Şifre</th>
+        <th scope="col">Rol</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${users.empty}">
+        <td colspan="5"> No User Available </td>
+    </tr>
+    <tr th:each="user: ${users}">
+        <td style="white-space: nowrap; width: 1%;">
+            <!-- GÜNCELLEME İŞLEMİ--->
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+                    data-target="#updateModal" th:attrappend="data-target=${user.id}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Güncelle</button>
+
+            <!-- The Modal -->
+            <div class="modal fade" id="updateModal" th:attrappend="id=${user.id}">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Kullanıcı Güncelle</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form action="#" th:action="@{/updateUser}"  th:object="${userEntity}" method="post">
+
+                            <div class="modal-body">
+                                <p style="color:red">**Güncellenecek Kullanıcı= <span th:text="${user.user_name}"  th:remove="tag"></span></p>
+
+                                <div class="form-group" >
+                                    <input type="text" th:value="${user.id}" class="form-control" id="id" name="id" hidden>
+                                   </div>
+                                <div class="form-group" >
+                                    <label for="user_name">Kullanıcı Adı</label>
+                                    <input type="text" th:value="${user.user_name}" class="form-control" id="user_name" name="user_name" placeholder="Kullanıcı Adı" required>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('user_name')}" th:errors="*{user_name}"></div>
+                                    <small id="usernameHelp1" class="form-text text-muted">Kullanıcı adı benzersiz ve 5-15 karakter olmalıdır</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Şifre</label>
+                                    <input type="password"  th:field="*{password}" class="form-control" id="password" placeholder="Şifre" required>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                                    <small id="passwordHelp1" class="form-text text-muted">Şifre 5-15 karakter olmalıdır</small>
+                                    </div>
+                                <div class="form-group">
+                                    <label>Rol</label>
+                                    <select id="role" name="role" class="form-control">
+                                        <option value="USER" text="USER" th:selected="${user.role == 'USER'}">USER</option>
+                                        <option value="ADMIN" text="ADMIN" th:selected="${user.role == 'ADMIN'}">ADMIN</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Güncelle</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+            </div>
+
+            <!-- SİLME İŞLEMİ--->
+            <button type="button" class="btn btn-danger" data-toggle="modal"
+                    data-target="#deleteModal" th:attrappend="data-target=${user.id}"  sec:authorize="hasAnyAuthority('ADMIN')">Sil </button>
+
+            <!-- The Modal -->
+            <div class="modal fade" id="deleteModal" th:attrappend="id=${user.id}">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Kullanıcı Sil</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-body">
+                            <h5>'<span style="text-color:red" th:text="${user.user_name}" th:remove="tag"></span>' kaydını silmek istediğinizden emin misiniz?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="#" th:action="@{'/deleteUser/{id}'(id=${user.id})}" th:method="delete" >
+                                <input type="hidden" name="_method" value="delete" />
+                                <button type="submit" id="deleteButton" class="btn btn-success">Sil</button>
+                                <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Kapat</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td th:text="${user.id}">ID</td>
+        <td th:text="${user.user_name}">Username</td>
+        <td th:text="${user.password}" sec:authorize="hasAnyAuthority('ADMIN')">Password</td>
+        <td th:text="${user.role}">Password</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
