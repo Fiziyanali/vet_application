@@ -57,13 +57,12 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public String logout(HttpServletRequest request,Authentication authentication, RedirectAttributes atts) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        System.out.println("xxxxxx:");
         authentication.setAuthenticated(false);
         atts.addFlashAttribute("message", "Başarıyla çıkış yaptınız!");
         atts.addFlashAttribute("alertClass", "alert-success");
