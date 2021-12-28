@@ -20,7 +20,7 @@
 
 ### Kullanılan teknolojiler:
 
-- Spring boot, Java 1.8, Thymeleaf, Maven, Bootstrap, Spring Security, Mysql, Lombok, JPA
+- Spring boot, Java, Thymeleaf, Maven, Bootstrap, Spring Security, Mysql, Lombok, JPA
 - Bootstrap: responsive tasarım için kullandım
 - Lombok: Kodların sade ve okunabilir olması için kullandım
 - Spring Security: Kullanıcı giriş ve yetkilendirmesi için kullandım. 
