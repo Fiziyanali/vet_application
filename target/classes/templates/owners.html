@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org/"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Owners</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="header">
+    <span>Silme ve ekleme işlemlerini yalnızca adminler yapabilir.</span>
+</div>
+<br>
+<h3>Hayvan Sahipleri</h3>
+<br>
+<!-- EKLEME İŞLEMİ--->
+<button type="button" class="btn btn-success" data-toggle="modal"
+        data-target="#submitModal" sec:authorize="hasAnyAuthority('ADMIN')">Kişi Ekle</button>
+<br>
+<br>
+<div th:if="${message}" th:text="${message}" th:class="${'alert ' + alertClass}"/>
+<!-- Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action="#" th:action="@{/addOwner}" th:object="${ownerEntity}" method="post">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Kişi Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name1">Ad</label>
+                    <input type="text" th:field="*{name}" class="form-control" id="name1" placeholder="Ad" required>
+                    <small id="nameHelp" class="form-text text-muted">Ad 3-15 karakter olmalıdır</small>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="surname1">Soyad</label>
+                    <input type="text" th:field="*{surname}" class="form-control" id="surname1" placeholder="Soyad" required>
+                    <small id="surnameHelp" class="form-text text-muted">Soyad 2-15 karakter olmalıdır</small>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+                </div>
+                <div class="form-group">
+                    <label for="phone1">Telefon</label>
+                    <input type="text" th:field="*{phone}" class="form-control" id="phone1" placeholder="Telefon">
+                </div>
+                <div class="form-group">
+                    <label for="email1">Mail</label>
+                    <input type="text" th:field="*{email}" class="form-control" id="email1" placeholder="mail">
+                </div>
+                <div class="form-group">
+                    <label for="address1">Adres</label>
+                    <textarea th:field="*{address}" class="form-control" id="address1" placeholder="Adres" />
+                    <small id="addressHelp" class="form-text text-muted">Adres 5-150 karakter olmalıdır</small>
+                    <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Ekle</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<table class="table table-striped">
+
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">ID</th>
+        <th scope="col">Ad</th>
+        <th scope="col">Soyad</th>
+        <th scope="col">Telefon</th>
+        <th scope="col">Email</th>
+        <th scope="col">Adres</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${owners.empty}">
+        <td colspan="7"> No Owners Available </td>
+    </tr>
+    <tr th:each="owner: ${owners}">
+        <td style="white-space: nowrap; width: 1%;">
+            <!-- GÜNCELLEME İŞLEMİ--->
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+                    data-target="#updateModal" th:attrappend="data-target=${owner.id}"  sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Güncelle</button>
+
+            <!-- The Modal -->
+            <div class="modal fade" id="updateModal" th:attrappend="id=${owner.id}">
+                <form action="#" th:action="@{/updateOwner/{id}(id=${owner.id})}"  th:object="${ownerEntity}" method="post">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Kişi Güncelle</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p style="color:red">**Güncellenecek Kişi= <span th:text="${owner.name} +' ' + ${owner.surname}"  th:remove="tag"></span></p>
+                                <div class="form-group">
+                                    <label for="name1">Ad</label>
+                                    <input type="text" th:value="${owner.name}" class="form-control" id="name" name="name" placeholder="Ad" required>
+                                    <small id="nameHelp1" class="form-text text-muted">Ad 3-15 karakter olmalıdır</small>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="surname">Soyad</label>
+                                    <input type="text" th:value="${owner.surname}" class="form-control" id="surname" name="surname" placeholder="Soyad" required>
+                                    <small id="surnameHelp1" class="form-text text-muted">Soyad 2-15 karakter olmalıdır</small>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Telefon</label>
+                                    <input type="text" th:value="${owner.phone}" class="form-control" id="phone" name="phone" placeholder="Telefon">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Mail</label>
+                                    <input type="text" th:value="${owner.email}" class="form-control" id="email" name="email" placeholder="mail">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Adres</label>
+                                    <textarea th:text="${owner.address}" class="form-control" id="address" name="address" placeholder="Adres"></textarea>
+                                    <small id="addressHelp1" class="form-text text-muted">Adres 5-150 karakter olmalıdır</small>
+                                    <div class="alert alert-warning" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Güncelle</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SİLME İŞLEMİ--->
+            <button type="button" class="btn btn-danger" data-toggle="modal"
+                    data-target="#deleteModal" th:attrappend="data-target=${owner.id}"  sec:authorize="hasAnyAuthority('ADMIN')">Sil </button>
+
+            <!-- The Modal -->
+            <div class=" modal fade" id="deleteModal" th:attrappend="id=${owner.id}">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Kişi Sil</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-body">
+                            <h5>'<span style="text-color:red" th:text="${owner.name} +' ' + ${owner.surname}" th:remove="tag"></span>' kaydını silmek istediğinizden emin misiniz?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="#" th:action="@{'/deleteOwner/{id}'(id=${owner.id})}" th:method="delete" >
+                                <button type="submit" id="submitButton" class="btn btn-success">Sil</button>
+                                <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Kapat</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td th:text="${owner.id}">ID</td>
+        <td th:text="${owner.name}">Name</td>
+        <td th:text="${owner.surname}">Surname</td>
+        <td th:text="${owner.phone}">Telephone</td>
+        <td th:text="${owner.email}">Email</td>
+        <td th:text="${owner.address}">Address</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
