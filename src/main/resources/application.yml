@@ -2,7 +2,7 @@ spring:
   datasource:
     username: fkfg71mnoduzgllt
     password: xtp5l8vd35gvd7dc
-    url: mysql://fkfg71mnoduzgllt:xtp5l8vd35gvd7dc@uyu7j8yohcwo35j3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/nubds9o93zpa8hi0
+    url: jdbc:mysql://fkfg71mnoduzgllt:xtp5l8vd35gvd7dc@uyu7j8yohcwo35j3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/nubds9o93zpa8hi0
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
