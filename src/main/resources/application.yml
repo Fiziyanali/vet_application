@@ -2,6 +2,11 @@ spring:
   datasource:
     username: root
     password: fredG.00
+    maxActive: 10
+    maxIdle: 5
+    minIdle: 2
+    initialSize: 5
+    removeAbandoned: true
     url: jdbc:mysql://localhost:3306/vetApplication?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
