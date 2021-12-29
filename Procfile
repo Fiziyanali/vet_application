@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/beyzaClinic-1.0-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar target/beyzaClinic-0.0.1-SNAPSHOT.jar
