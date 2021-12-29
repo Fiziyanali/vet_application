@@ -1,12 +1,12 @@
 spring:
   datasource:
-    username: root
-    password: fredG.00
-    url: jdbc:mysql://localhost:3306/vetApplication?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: process.env.MYSQL_USERNAME
+    password: process.env.MYSQL_PASSWORD
+    url: process.env.MYSQL_URL
+    driver-class-name: process.env.MYSQL_DRIVER
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
-    properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    properties.hibernate.dialect: process.env.MYSQL_HIBERNATE
 
