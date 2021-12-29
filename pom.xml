@@ -11,6 +11,7 @@
 	<groupId>com.vetApplication</groupId>
 	<artifactId>beyzaClinic</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>beyzaClinic</name>
 	<description>Ozgur Yazilim Veteriner Uygulamasi</description>
 	<properties>

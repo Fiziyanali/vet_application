@@ -1,12 +1,12 @@
 spring:
   datasource:
-    username: process.env.MYSQL_USERNAME
-    password: process.env.MYSQL_PASSWORD
-    url: process.env.MYSQL_URL
-    driver-class-name: process.env.MYSQL_DRIVER
+    username: fkfg71mnoduzgllt
+    password: xtp5l8vd35gvd7dc
+    url: uyu7j8yohcwo35j3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/nubds9o93zpa8hi0
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
-    properties.hibernate.dialect: process.env.MYSQL_HIBERNATE
+    properties.hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 

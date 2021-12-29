@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+vet_application.sql
