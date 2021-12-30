@@ -11,7 +11,6 @@
 	<groupId>com.vetApplication</groupId>
 	<artifactId>beyzaClinic</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
 	<name>beyzaClinic</name>
 	<description>Ozgur Yazilim Veteriner Uygulamasi</description>
 	<properties>
@@ -31,6 +30,7 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.27</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -78,7 +78,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-
 		</plugins>
 
 	</build>
