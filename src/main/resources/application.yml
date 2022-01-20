@@ -1,14 +1,15 @@
 spring:
   datasource:
-    username: fkfg71mnoduzgllt
-    password: xtp5l8vd35gvd7dc
-    url: jdbc:mysql://fkfg71mnoduzgllt:xtp5l8vd35gvd7dc@uyu7j8yohcwo35j3.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/nubds9o93zpa8hi0
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    generate-unique-name: false
   jpa:
-    show-sql: true
-    generate-ddl: true
     hibernate:
-      ddl-auto: update
-    properties.hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
-server:
-  port: ${PORT:8080}
+      dll-auto: create-drop #none
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enable: true
+      path: /h2-console
